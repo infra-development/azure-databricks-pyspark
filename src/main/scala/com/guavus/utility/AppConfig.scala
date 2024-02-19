@@ -8,9 +8,13 @@ object AppConfig {
   // Access configuration values
   val ordersPath: String = applicationConf.getString("files.orders")
   val ordersWhPath: String = applicationConf.getString("files.orders_wh")
+  val ordersSamplePath: String = applicationConf.getString("files.orders_sample")
+  val ordersSample1Path: String = applicationConf.getString("files.orders_sample1")
+  val ordersSample2Path: String = applicationConf.getString("files.orders_sample2")
+  val ordersSample3Path: String = applicationConf.getString("files.orders_sample3")
   val customersPath: String = applicationConf.getString("files.customers")
+  val customerNestedPath: String = applicationConf.getString("files.customer_nested")
   val orderItemPath: String = applicationConf.getString("files.order_items")
-
   val covid19_cases_path = applicationConf.getString("files.covid19_cases")
   val covid19_states_path = applicationConf.getString("files.covid19_states")
   val student_review_path = applicationConf.getString("files.student_review")
