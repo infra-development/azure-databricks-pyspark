@@ -20,5 +20,9 @@ object AppConfig {
   val student_review_path = applicationConf.getString("files.student_review")
   val groceries_path = applicationConf.getString("files.groceries")
   val products_path = applicationConf.getString("files.products")
+  val library_path = applicationConf.getString("files.library")
+  val train_path = applicationConf.getString("files.train")
+  val sales_data = applicationConf.getString("files.sales_data")
+  val hospital_data = applicationConf.getString("files.hospital")
 
 }
