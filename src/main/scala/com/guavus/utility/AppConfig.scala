@@ -24,5 +24,8 @@ object AppConfig {
   val train_path = applicationConf.getString("files.train")
   val sales_data = applicationConf.getString("files.sales_data")
   val hospital_data = applicationConf.getString("files.hospital")
+  val order_data = applicationConf.getString("files.order_data")
+  val window_data = applicationConf.getString("files.windowdata")
+  val window_data_modfied = applicationConf.getString("files.windowdata_modified")
 
 }
