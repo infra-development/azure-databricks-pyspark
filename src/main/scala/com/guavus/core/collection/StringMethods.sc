@@ -99,6 +99,13 @@ S.zipWithIndex
   $WHERE age > 18
   $""".stripMargin('$')
 
+val x_bew = "haeoldfds"
+x_bew.take(5) + x_bew.drop(5 + 1)
+// take first 5 chars, drop first 6 chars
+
+
+
+
 
 
 

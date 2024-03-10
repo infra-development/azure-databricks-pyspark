@@ -29,9 +29,17 @@ object W4Question1 {
     order_item_id || order_id || order_item_product_id || order_item_quantity || order_item_subtotal || order_item_product_price
      */
 
+    val o_order_id = 0; val o_order_date = 1; val o_customer_id = 2; val o_order_status = 3
+
+    val c_customer_id = 0;  val c_customer_fname = 1; val c_customer_lname = 2; val c_customer_email = 3; val c_customer_password = 4
+    val c_customer_street = 5; val c_customer_city = 6; val c_customer_state = 7; val c_customer_zipcode = 8
+
+    val oi_order_item_id = 0; val oi_order_id = 1; val oi_order_item_product_id = 2; val oi_order_item_quantity = 3;
+    val oi_order_item_subtotal = 4; val oi_order_item_product_price = 5
+
     //  1. we need to find top 10 customers who have spent the most amount (premium customers)
-    val order_id_subtotal_rdd = order_item_rdd.map(x => (x.split(",")(1), x.split(",")(4)))
-    val order_id_customer_id_rdd = orders_rdd.map(x => (x.split(",")(0), x.split(",")(2)))
+    val order_id_subtotal_rdd = order_item_rdd.map(x => (x.split(",")(oi_order_id), x.split(",")(oi_order_item_subtotal)))
+    val order_id_customer_id_rdd = orders_rdd.map(x => (x.split(",")(o_order_id), x.split(",")(o_customer_id)))
 
     val order_id_subtotal_customer_id_rdd = order_id_subtotal_rdd.join(order_id_customer_id_rdd)
     order_id_subtotal_customer_id_rdd.take(10).foreach(x => println(x))
@@ -49,7 +57,10 @@ object W4Question1 {
      */
 
     // 2. Top 10 product id's with most quantities sold
-    val product_quantity_rdd = order_item_rdd.map(x => (x.split(",")(2), x.split(",")(3).toDouble))
+    val product_quantity_rdd = order_item_rdd.map(x => {
+      val parts = x.split(",")
+      (parts(oi_order_item_product_id), parts(oi_order_item_quantity).toDouble)
+    })
     product_quantity_rdd.reduceByKey((x, y) => x + y).sortBy(x => x._2).take(10).foreach(println)
 
     // 3. How many customers are from Caguas city

@@ -29,8 +29,16 @@ object WindowFunctions {
     val myWindow = Window.partitionBy("country").orderBy("weeknum").rowsBetween(Window.unboundedPreceding, Window.currentRow)
     // current row and previous 1
     val myWindow1 = Window.partitionBy("country").orderBy("weeknum").rowsBetween(-1, Window.currentRow)
+    val myWindow2 = Window.partitionBy("country").orderBy("weeknum")
     val result_df = window_df.withColumn("running_total", format_number(sum("invoicevalue").over(myWindow1), 2))
     result_df.show()
+
+    val result_df1 = window_df
+      .withColumn("previous_value", lag("invoicevalue", 1).over(myWindow2))
+      .withColumn("diff_from_previous", format_number(col("invoicevalue") - col("previous_value"), 2))
+    result_df1.show()
+    window_df.printSchema()
+    result_df1.printSchema()
 
     window_modified_df.orderBy("country", "invoicevalue").show()
     val anotherWindow = Window.partitionBy("country").orderBy("weeknum").rowsBetween(Window.unboundedPreceding, Window.currentRow)
@@ -55,10 +63,13 @@ object WindowFunctions {
     val lag_window_df = window_modified_df.withColumn("previous_week", lag("invoicevalue", 1).over(lag_lead_window))
     val lag_final_df = lag_window_df.withColumn("invoice_diff", expr("invoicevalue - previous_week"))
     lag_final_df.show()
+
     lag_final_df.select("*").where("invoice_diff is not null").show()
+
     val lead_window_df = window_modified_df.withColumn("next_week", lead("invoicevalue", 1).over(lag_lead_window))
     val lead_final_df = lead_window_df.withColumn("invoice_diff", expr("invoicevalue - next_week"))
     lead_final_df.show()
+
     lead_final_df.select("*").where("invoice_diff is not null").show()
   }
 
