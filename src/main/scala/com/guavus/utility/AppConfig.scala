@@ -27,5 +27,6 @@ object AppConfig {
   val order_data = applicationConf.getString("files.order_data")
   val window_data = applicationConf.getString("files.windowdata")
   val window_data_modfied = applicationConf.getString("files.windowdata_modified")
+  val orders_1gb = applicationConf.getString("files.orders_1gb")
 
 }
