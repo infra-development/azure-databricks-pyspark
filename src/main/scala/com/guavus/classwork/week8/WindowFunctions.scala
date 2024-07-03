@@ -26,12 +26,16 @@ object WindowFunctions {
     // Windowing aggregation
     window_df.sort("country").show()
 
+    println("---------- running total ---------------")
+
     val myWindow = Window.partitionBy("country").orderBy("weeknum").rowsBetween(Window.unboundedPreceding, Window.currentRow)
     // current row and previous 1
-    val myWindow1 = Window.partitionBy("country").orderBy("weeknum").rowsBetween(-1, Window.currentRow)
+    val myWindow1 = Window.partitionBy("country").orderBy("weeknum").rowsBetween(-2, Window.currentRow)
     val myWindow2 = Window.partitionBy("country").orderBy("weeknum")
-    val result_df = window_df.withColumn("running_total", format_number(sum("invoicevalue").over(myWindow1), 2))
+    val result_df = window_df.withColumn("running_total", format_number(sum("invoicevalue").over(myWindow), 2))
     result_df.show()
+
+    println("---------- previous_value and diff_from_previous ---------------")
 
     val result_df1 = window_df
       .withColumn("previous_value", lag("invoicevalue", 1).over(myWindow2))
@@ -40,18 +44,26 @@ object WindowFunctions {
     window_df.printSchema()
     result_df1.printSchema()
 
+    println("---------- running_total ---------------")
+
     window_modified_df.orderBy("country", "invoicevalue").show()
     val anotherWindow = Window.partitionBy("country").orderBy("weeknum").rowsBetween(Window.unboundedPreceding, Window.currentRow)
     val result_df2 = window_modified_df.withColumn("running_total", format_number(sum("invoicevalue").over(anotherWindow), 2))
     result_df2.show()
 
+    println("---------- rank by invoicevalue per country  ---------------")
+
     val rank_window = Window.partitionBy("country").orderBy(desc("invoicevalue"))
     val rank_result_df = window_modified_df.withColumn("rank", rank().over(rank_window))
     rank_result_df.show()
 
+    println("---------- row_num by invoicevalue per country  ---------------")
+
     val row_num_window = Window.partitionBy("country").orderBy(desc("invoicevalue"))
     val row_num_result_df = window_modified_df.withColumn("row_num", row_number().over(row_num_window))
     row_num_result_df.show()
+
+    println("---------- dense_rank by invoicevalue per country  ---------------")
 
     val dense_rank_window = Window.partitionBy("country").orderBy(desc("invoicevalue"))
     val dense_rank_result_df = window_modified_df.withColumn("dense_rank", dense_rank().over(dense_rank_window))
@@ -59,6 +71,7 @@ object WindowFunctions {
 
     dense_rank_result_df.select("*").where("dense_rank = 1").drop("dense_rank").show()
 
+    println("---------- prev_week and invoice_diff  ---------------")
     val lag_lead_window = Window.partitionBy("country").orderBy("weeknum")
     val lag_window_df = window_modified_df.withColumn("previous_week", lag("invoicevalue", 1).over(lag_lead_window))
     val lag_final_df = lag_window_df.withColumn("invoice_diff", expr("invoicevalue - previous_week"))
@@ -71,6 +84,8 @@ object WindowFunctions {
     lead_final_df.show()
 
     lead_final_df.select("*").where("invoice_diff is not null").show()
+    window_df.groupBy("country").pivot("weeknum").sum("invoicevalue").show()
+    window_df.groupBy("country").pivot("weeknum").sum("invoicevalue").na.drop().show()
   }
 
 }

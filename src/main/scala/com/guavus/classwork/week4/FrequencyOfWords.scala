@@ -25,14 +25,15 @@ object FrequencyOfWords {
 //    words_freq.foreach(println)
 
     val anotherWordCount = spark.sparkContext.textFile("src/main/resources/wordcount.txt")
-    val flattendRDD = anotherWordCount.flatMap(x => x.split("\\W+"))
-    val normalizedWords = flattendRDD.map(word => word.toLowerCase)
-
-    val wordsToFilter = Set("a", "an", "then", "the")
-    val filteredWords = normalizedWords.filter(x => !wordsToFilter.contains(x.toLowerCase())).filter(x => x.length > 3)
-    val wordMapNew = filteredWords.map(word => (word, 1))
-    val wordsFreq = wordMapNew.reduceByKey((a, b) => a + b).sortBy(x => x._2, ascending = false)
-    wordsFreq.collect().foreach(x => println(x))
+    println(anotherWordCount.count())
+//    val flattendRDD = anotherWordCount.flatMap(x => x.split("\\W+"))
+//    val normalizedWords = flattendRDD.map(word => word.toLowerCase)
+//
+//    val wordsToFilter = Set("a", "an", "then", "the")
+//    val filteredWords = normalizedWords.filter(x => !wordsToFilter.contains(x.toLowerCase())).filter(x => x.length > 3)
+//    val wordMapNew = filteredWords.map(word => (word, 1))
+//    val wordsFreq = wordMapNew.reduceByKey((a, b) => a + b).sortBy(x => x._2, ascending = false)
+//    wordsFreq.collect().foreach(x => println(x))
 
   }
 }

@@ -22,6 +22,7 @@ object DataFrameCreation {
     val ordersSchemaString = "order_id LONG, order_date STRING, cust_id LONG, order_status STRING"
     val schema = StructType.fromDDL(ordersSchemaString)
     val orders_sample_df = spark.read.schema(ordersSchemaString).csv(orders_sample_path)
+    val orders_sample_df1 = spark.read.schema(schema).csv(orders_sample_path)
     orders_sample_df.createOrReplaceTempView("orders_view")
 
     /*

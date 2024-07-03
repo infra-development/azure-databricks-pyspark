@@ -54,6 +54,7 @@ object JoinsInSpark {
     // left anti, customers who haven't placed at least 1 order
     customersDF.join(ordersDF, ordersDF("cust_id") === customersDF("customerid"), "anti").write.format("noop").mode("overwrite").save()
 
+
     // hint for shuffle hash join
     ordersDF.join(customersDF.hint("shuffle_hash"), ordersDF("cust_id") === customersDF("customerid"), "anti").write.format("noop").mode("overwrite").save()
 
